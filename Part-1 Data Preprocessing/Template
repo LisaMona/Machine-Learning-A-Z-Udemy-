@@ -1,0 +1,53 @@
+#Data Preprocessing#
+
+#importing libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#importing dataset
+dataset = pd.read_csv('Data.csv')
+# variable X is assigned the independent values of dataset i.e from 
+#all rows & all columns except last column
+X = dataset.iloc[:, :-1].values
+# variable Y is assigned the dependent values of dataset i.e from 
+#all rows & the last column
+Y = dataset.iloc[:, 3].values
+
+#Taking care of missing data
+#sk learn= scikit learn, contains libraries to make ML models
+from sklearn.preprocessing import Imputer
+# create an object imputer of class Imputer
+imputer  = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
+#(highlight the class/word and press ctrl+i to get info/object inspector about it)
+#fit the imputer object to the required columns of Matrix X
+imputer = imputer.fit(X[:, 1:])
+#Replace the columns with missing data
+X[:, 1:] = imputer.transform(X[:, 1:])
+
+#Encoding categorical data
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+# create an object labelencoder of class LabelEncoder
+labelencoder_X = LabelEncoder()
+#the first column of matrix X is encoded
+X[:,0] = labelencoder_X.fit_transform(X[:,0])
+onehotencoder = OneHotEncoder(categorical_features = [0])
+X = onehotencoder.fit_transform(X).toarray()
+#the first column of matrix X is encoded
+labelencoder_Y = LabelEncoder()
+Y = labelencoder_Y.fit_transform(Y)
+
+#Splitting the dataset into training set and test set
+from sklearn.cross_validation import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state = 0)
+
+# Feature Scaling
+"""from sklearn.preprocessing import StandardScaler
+sc_X = StandardScaler()
+X_train = sc_X.fit_transform(X_train)
+X_test = sc_X.transform(X_test)
+sc_y = StandardScaler()
+y_train = sc_y.fit_transform(y_train)"""
+
+
+
